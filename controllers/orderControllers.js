@@ -67,6 +67,54 @@ const orderHistory=async(req,res)=>{
   }
 }
 
+//* ORDERED ITEM search for status change
+const orderedItem=async(req,res)=>{
+  
+  try{
+    const orderId=req.params.orderId
+    const data=await OrderList.find({orderId})
+    res.status(200).json({
+      status:"success",
+      data:{
+        foodName:data[0].ordered_Data.map(item=>item.foodTitle),
+        orderStatus:data[0].order_status,
+        email:data[0].email
+
+        
+      }
+    })
+   }catch(e){
+     res.status(400).send(e)
+    } ;
+}
+
+//*Order Status Change
+
+const changeOrderStatus=async(req,res)=>{
+try {
+  const orderId=req.params.orderId
+  const order_status=req.body
+
+  console.log(orderId,order_status)
+
+  const data=await OrderList.findOneAndUpdate(orderId,order_status,{new:true})
+  console.log(data.order_status)
+  if(data!==null){
+    res.status(200).json({
+      status:"success",
+      sms:`Successfully order status Change from  to ${data.order_status}`
+    })
+  }
+
+} catch (e) {
+  res.status(400).send(e)
+}
+}
 
 
-module.exports={orderFood,orderHistory}
+module.exports={
+            orderFood,
+            orderHistory,
+            orderedItem,
+            changeOrderStatus
+          }

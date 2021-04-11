@@ -55,8 +55,81 @@ const getFoodsList=async(req,res)=>{
   
 }
 
+//Delete food
+const deleteFood=async(req,res)=>{
+  console.log(req.params.id)
+  try {
+    const isDel=await FoodDetail.findOneAndDelete({_id:req.params.id})
+    // console.log(isDel)
+    res.status(200).send(isDel===null?{success:"Not Found anything"}: {success:"Delete Successfully"})
+  } catch (error) {
+    console.log(`Error from Server ${error}`)
+  }
+}
+
+//Update/patch Food
+
+// router.patch('/students/:id' , async(req , res)=>{
+//   const _id=req.params.id
+//  try{
+//   const studentInfo= await Student.findByIdAndUpdate(_id, req.body,{new:true})
+
+//   // find without id the the bellow method used
+//   // const studentInfo= await Student.findOneAndUpdate(email/, req.body,{new:true})
+
+//   res.status(200).send(studentInfo)
+//   }catch(e){
+//     res.status(400).send(e)
+//    } ;
+
+// })
+
+
+
+const partialUpdate=async(req,res)=>{
+const _id=req.params.id
+const updateData=req.body
+
+console.log(_id, updateData)
+
+try {
+  const updateInfo=await FoodDetail.findByIdAndUpdate(_id, updateData,{new:true})
+  if(updateInfo!==null){
+    res.status(200).send({success:"Update Successfully"})
+  }
+
+} catch (error) {
+  res.status(400).send(error)
+}
+
+}
+
+//SEARCH FOOD
+const searchFood=async(req,res)=>{
+  const _id=req.params.id
+  
+  
+  console.log(_id)
+  
+  try {
+    const foodInfo=await FoodDetail.findById({_id:_id})
+    if(foodInfo!==null){
+      res.status(200).send({data:foodInfo})
+    }
+  
+  } catch (error) {
+    res.status(400).send(error)
+  }
+  
+  }
+
+
+
 
 module.exports={
  addFood,
- getFoodsList
+ getFoodsList,
+ deleteFood,
+ partialUpdate,
+ searchFood
 }

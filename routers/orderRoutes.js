@@ -9,7 +9,11 @@ router
 router
  .route('/orderhistory/:email') 
  .get(orderControllers.orderHistory)
- 
+
+router
+.route('/:orderId')
+.get(orderControllers.orderedItem)
+.patch(orderControllers.changeOrderStatus) 
 
 
 
