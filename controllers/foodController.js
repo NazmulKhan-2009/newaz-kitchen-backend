@@ -8,7 +8,8 @@ const addFood=async(req , res)=>{
  try{
 
      const time =new Date().toLocaleTimeString()
-     const date=new Date().toDateString()     
+     const date=new Date().toDateString() 
+         
      const foodData={
      foodTitle:req.body.foodTitle,
      foodType:req.body.foodType,
