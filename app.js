@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const foodRoutes=require('./routers/foodRoutes')
 const orderRoutes=require('./routers/orderRoutes')
 const userRoutes=require('./routers/userRoutes')
+const adminRoutes=require('./routers/adminRoutes')
 // const {addFood}=require("./controllers/foodController")
 
 const port=process.env.PORT ||5000
@@ -31,6 +32,7 @@ app.use(fileUpload());
 app.use(('/api/food') ,foodRoutes)
 app.use(('/api/order') ,orderRoutes)
 app.use(('/api/user'), userRoutes)
+app.use(('/api/admin'), adminRoutes)
 
 
 //without file base64

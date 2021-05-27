@@ -1,5 +1,6 @@
 // const {Schema, model}=require('mongoose')
 const {Schema, model}=require('mongoose')
+const mongoose=require('mongoose')
 
 const userRegisterSchema=new Schema({
 
@@ -19,7 +20,7 @@ const userRegisterSchema=new Schema({
  },
 
  user_phone:{
-  type:Number,
+  type:String,
   required:true,
   trim:true,
   unique:true
@@ -42,7 +43,13 @@ local_time:{
 int_time:{
  type:Date,
  default:new Date(Date.now()).toLocaleString()
-}
+},
+order:[
+  {
+    type:mongoose.Types.ObjectId,
+    ref:'OrderCollection'
+  }
+]
 
 
 })

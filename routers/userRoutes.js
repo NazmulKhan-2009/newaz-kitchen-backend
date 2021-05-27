@@ -10,4 +10,8 @@ router
 .route('/signin')
 .post(userController.signIn)
 
+router
+.route('/alluser')
+.get(userController.userList)
+
 module.exports=router

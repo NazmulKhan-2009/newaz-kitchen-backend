@@ -1,19 +1,27 @@
 const express = require('express');
 const orderControllers = require('../controllers/orderControllers');
 const router=express.Router();
+const loginAuth=require("../middlewares/loginAuth")
 
 router
  .route('/orderdetail')
- .post(orderControllers.orderFood)
+ .post(loginAuth,orderControllers.orderFood)
+ .get(loginAuth,orderControllers.orderHis)
 
 router
  .route('/orderhistory/:email') 
- .get(orderControllers.orderHistory)
+ .get(loginAuth,orderControllers.orderHistory)
+ 
 
 router
 .route('/:orderId')
 .get(orderControllers.orderedItem)
 .patch(orderControllers.changeOrderStatus) 
+
+// optional checking
+// router
+// .route('/orderhistory')
+// .get(orderControllers.preOrder)
 
 
 

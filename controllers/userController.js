@@ -1,5 +1,7 @@
 const UserRegister=require('../models/user')
+const admin=require('../models/admin')
 const bcrypt=require('bcrypt')
+const jwt = require('jsonwebtoken');
 
 
 const createUser = async(req,res)=>{
@@ -27,8 +29,11 @@ const createUser = async(req,res)=>{
 const existUser=await UserRegister.findOne({user_name:userData.user_name})
 const existEmail=await UserRegister.findOne({user_email:userData.user_email})
 const existPhone=await UserRegister.findOne({user_phone:userData.user_phone})
+const adminEmail=await admin.findOne({admin_email:userData.user_email})
+const adminName=await admin.findOne({admin_name:userData.user_name})
 
-console.log(existUser)
+// console.log(existUser)
+// console.log(adminInfo)
 
 // if(existUser){
 //   res.status(400).json({
@@ -50,6 +55,14 @@ if(existUser){
   res.status(200).json({
     response:`Already registered with ${existPhone.user_phone} try another one`
   })
+}else if(adminEmail){
+  res.status(200).json({
+    response:`Already registered as an admin`
+  })
+}else if(adminName){
+  res.status(200).json({
+    response:`title Already registered as an admin`
+  })
 }else{
   const data=await UserRegister.create(userData)
   res.status(200).json({
@@ -64,17 +77,34 @@ if(existUser){
 
 //SIGN IN
 const signIn=async(req,res)=>{
-  const user_name=req.body.user_name
+  const {user_name,user_email}=req.body
+  
   try{
-    const fetchUserName=await UserRegister.findOne({user_name})
+    const fetchUserName=await UserRegister.findOne({user_name}).populate('order','orderId order_status  ordered_Data -_id')
+    const fetchUserEmail=await UserRegister.findOne({user_email})
+
+    //! ADMIN VALIDATION
+    const fetchAdminName=await admin.findOne({admin_name:user_name})
+    const fetchAdminEmail=await admin.findOne({admin_email:user_email})
+    // !WORKING START FROM HERE
+    // const fetchAdminName=await admin.findOne({admin_name:user_name})
+    // console.log(fetchAdminName.admin_email)
     
     console.log(fetchUserName)
-    if(fetchUserName){
+    if(fetchUserName && fetchUserEmail ){
      const matchPassword=await bcrypt.compare(req.body.user_password, fetchUserName.user_password);
      console.log(matchPassword)
      if(matchPassword){
+      const token=await jwt.sign({
+        // data:{user_name:fetchUserName.user_name,user_id:fetchUserName._id}
+        user_name:fetchUserName.user_name,user_id:fetchUserName._id
+      }, 'mynameiskhan', { expiresIn: '1h' });
+
+      console.log(token)
+
         res.status(200).json({
           data:fetchUserName,
+          token,
           status:['success',"Successfully Logged In"]
           
         })
@@ -86,6 +116,27 @@ const signIn=async(req,res)=>{
           // console.log("auth failed")
         }
      
+    }else if(fetchAdminName && fetchAdminEmail){
+      console.log("that is an Admin")
+      const matchPassword=await bcrypt.compare(req.body.user_password,fetchAdminName.admin_password)
+      
+      if(matchPassword){
+
+        const token=await jwt.sign({admin_name:fetchAdminName.admin_name,admin_id:fetchAdminName._id},'mynameiskhan',{expiresIn:'1h'})
+        console.log(token)
+
+          res.status(200).json({
+            data:fetchAdminName,
+            token,
+            status:["admin",`Welcome Admin ${fetchAdminName.admin_name}`]
+          })
+      }else{
+        res.status(201).json({
+          status:['error',"Authentication Failed as an Admin: pass"]
+        
+        })
+        // console.log("auth failed")
+      }
     }else{
       res.status(201).json({
         status:['error',"Authentication Failed: user"]
@@ -101,9 +152,26 @@ const signIn=async(req,res)=>{
     } ;
 }
 
+const userList=async(req,res)=>{
+
+  try{
+    const userData=await UserRegister.find({user_name: "nazmul"}).populate('order','orderId order_status -_id')
+    console.log(userData)
+    res.status(200).json({
+      data:userData
+    })
+      
+   }catch{
+     res.status(500).json({
+       message:'Error from server'
+     })
+    } ;
+    
+}
 
 module.exports={
  createUser,
- signIn
+ signIn,
+ userList
 
 }
