@@ -13,6 +13,10 @@ router
 .patch(foodControllers.partialUpdate)
 .get(foodControllers.searchFood)
 
+router
+.route('/searchfood')
+.post(foodControllers.searchFoodBykey)
+
 
 
 

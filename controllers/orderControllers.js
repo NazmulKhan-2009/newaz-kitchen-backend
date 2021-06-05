@@ -1,6 +1,7 @@
 const OrderList=require("../models/orders")
 const user=require("../models/user")
 const jwt=require('jsonwebtoken')
+const admin=require('../models/admin')
 
 const orderFood=async(req,res)=>{
   console.log(req.user_id)
@@ -27,7 +28,10 @@ const orderFood=async(req,res)=>{
  
 //* ###### CREATE METHOD WAY
  try{
-   
+
+   const adminFound=await admin.findOne({admin_email:req.body.email})
+  //  console.log(adminFound)
+
    const cartOrder={
      email:req.body.email,
      order_Time:`${new Date().toDateString() } / ${new Date().toLocaleTimeString()} `,
@@ -45,7 +49,9 @@ const orderFood=async(req,res)=>{
    
   //  const orderDetails=await OrderList.create(cartOrder)
 
-   const newOrder=new OrderList(cartOrder)
+   if(!adminFound){
+
+  const newOrder=new OrderList(cartOrder)
    const orderDetails=await newOrder.save()
    const inv=await user.updateOne({_id:req.user_id},{
      $push:{
@@ -53,14 +59,25 @@ const orderFood=async(req,res)=>{
      }
    })
 
-   console.log(orderDetails)
-   console.log(inv)
+  //  console.log(orderDetails)
+  //  console.log(inv)
 
    res.status(200).json({
     status:'success',
     data:orderDetails
    })
 
+   }else{
+    res.status(200).json({
+      status:'Admin is prohibited for the feature',
+      
+     })
+   }
+
+
+   
+
+   
   }catch(e){
     res.status(400).send(e)
   } ;

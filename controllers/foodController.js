@@ -125,6 +125,16 @@ const searchFood=async(req,res)=>{
   }
 
 
+  //IMP SEARC FOOD BY KEY FROM USER
+
+  const searchFoodBykey=async(req, res)=>{
+    const key=req.body.keyWord
+    console.log(key)
+    // return this.find({courseName:new RegExp(clue,"i")})
+    const data=await FoodDetail.find({foodTitle:new RegExp(key,"i")})
+    // console.log(data)
+    res.status(200).json({data})
+  }
 
 
 module.exports={
@@ -132,5 +142,6 @@ module.exports={
  getFoodsList,
  deleteFood,
  partialUpdate,
- searchFood
+ searchFood,
+ searchFoodBykey
 }
