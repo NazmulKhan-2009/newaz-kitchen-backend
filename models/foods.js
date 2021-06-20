@@ -42,6 +42,11 @@ const FoodDetailSchema = new mongoose.Schema({
       type:Date,
       default:new Date(Date.now()).toLocaleString()
     },
+    reviews:[
+      {
+      
+      }
+          ]
     
 
     

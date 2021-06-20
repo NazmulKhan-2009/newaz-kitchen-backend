@@ -113,7 +113,7 @@ const searchFood=async(req,res)=>{
   console.log(_id)
   
   try {
-    const foodInfo=await FoodDetail.findById({_id:_id})
+    const foodInfo=await FoodDetail.find({_id:_id})
     if(foodInfo!==null){
       res.status(200).send({data:foodInfo})
     }
@@ -137,11 +137,58 @@ const searchFood=async(req,res)=>{
   }
 
 
+
+  const review=async(req,res)=>{
+    try{
+        console.log(req.body)
+        // const existData=await FoodDetail.findOne({reviews.email:req.body.rating_email})
+        // const _id=req.body.foodId
+        const existData=await FoodDetail.findById({_id:req.body.foodId})
+        console.log(existData.reviews)
+
+        const bool=existData.reviews.some(rev=>rev.email===req.body.rating_email)
+
+        console.log(bool)
+
+        // const 
+
+if(!bool){
+  const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
+    $push:{
+       reviews:{rate:req.body.rating,comment:req.body.comment,email:req.body.rating_email}
+    }
+  })
+
+  if(resData!==null){
+    const resSendData=await FoodDetail.findById({_id:req.body.foodId})
+    console.log(resSendData.reviews.length)
+    res.status(200).send({data:resSendData})
+  }
+
+}else{
+  console.log("you have already rated")
+}
+
+        
+
+
+       
+
+        
+     }catch(e){
+       
+      } ;
+  }
+
+  
+
+
 module.exports={
  addFood,
  getFoodsList,
  deleteFood,
  partialUpdate,
  searchFood,
- searchFoodBykey
+ searchFoodBykey,
+ review
 }

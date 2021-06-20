@@ -80,18 +80,26 @@ const signIn=async(req,res)=>{
   const {user_name,user_email}=req.body
   
   try{
+    let accessByUser=false
+    let aceessByAdmin=false
     const fetchUserName=await UserRegister.findOne({user_name}).populate('order','orderId order_status  ordered_Data -_id')
-    const fetchUserEmail=await UserRegister.findOne({user_email})
+    // const fetchUserEmail=await UserRegister.findOne({user_email})
+   
+    
 
     //! ADMIN VALIDATION
     const fetchAdminName=await admin.findOne({admin_name:user_name})
-    const fetchAdminEmail=await admin.findOne({admin_email:user_email})
+    // const fetchAdminEmail=await admin.findOne({admin_email:user_email})
     // !WORKING START FROM HERE
     // const fetchAdminName=await admin.findOne({admin_name:user_name})
     // console.log(fetchAdminName.admin_email)
+
+    if(fetchUserName) accessByUser=fetchUserName.user_email===user_email
+    if(fetchAdminName) aceessByAdmin=fetchAdminName.admin_email===user_email
+
     
     console.log(fetchUserName)
-    if(fetchUserName && fetchUserEmail ){
+    if(accessByUser){
      const matchPassword=await bcrypt.compare(req.body.user_password, fetchUserName.user_password);
      console.log(matchPassword)
      if(matchPassword){
@@ -116,7 +124,7 @@ const signIn=async(req,res)=>{
           // console.log("auth failed")
         }
      
-    }else if(fetchAdminName && fetchAdminEmail){
+    }else if(aceessByAdmin){
       console.log("that is an Admin")
       const matchPassword=await bcrypt.compare(req.body.user_password,fetchAdminName.admin_password)
       

@@ -17,6 +17,10 @@ router
 .route('/searchfood')
 .post(foodControllers.searchFoodBykey)
 
+router
+.route('/review')
+.post(foodControllers.review)
+
 
 
 
