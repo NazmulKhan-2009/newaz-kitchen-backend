@@ -155,7 +155,11 @@ const searchFood=async(req,res)=>{
 if(!bool){
   const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
     $push:{
-       reviews:{rate:req.body.rating,comment:req.body.comment,email:req.body.rating_email}
+       reviews:{
+         rate:req.body.rating || 0,
+         comment:req.body.comment,
+         email:req.body.rating_email,
+         date:`${new Date().toDateString()} at ${new Date().toLocaleTimeString()}`}
     }
   })
 
