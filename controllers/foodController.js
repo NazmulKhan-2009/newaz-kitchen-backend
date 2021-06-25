@@ -146,13 +146,18 @@ const searchFood=async(req,res)=>{
         const existData=await FoodDetail.findById({_id:req.body.foodId})
         console.log(existData.reviews)
 
-        const bool=existData.reviews.some(rev=>rev.email===req.body.rating_email)
+        // const emailExist=existData.reviews.some(rev=>rev.email===req.body.rating_email )
+        const infoExist=existData.reviews.some(rev=>rev.email===req.body.rating_email &&
+          rev.rate>0
+          )
+        const bool=existData.reviews.some(rev=>rev.rate===req.body.rating)
 
         console.log(bool)
+        console.log(infoExist)
 
         // const 
 
-if(!bool){
+if(!infoExist){
   const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
     $push:{
        reviews:{
@@ -170,6 +175,24 @@ if(!bool){
   }
 
 }else{
+  const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
+    $push:{
+       reviews:{
+         rate:0,
+         comment:req.body.comment,
+         email:req.body.rating_email,
+         date:`${new Date().toDateString()} at ${new Date().toLocaleTimeString()}`}
+    }
+  })
+
+  if(resData!==null){
+    const resSendData=await FoodDetail.findById({_id:req.body.foodId})
+    console.log(resSendData.reviews.length)
+    res.status(200).send({data:resSendData})
+  }
+
+
+
   console.log("you have already rated")
 }
 
