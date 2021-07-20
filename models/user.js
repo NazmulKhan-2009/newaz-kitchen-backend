@@ -26,6 +26,9 @@ const userRegisterSchema=new Schema({
   unique:true
   
  },
+ userImage:{
+  type:String
+ },
 
  user_password:{
   type:String,

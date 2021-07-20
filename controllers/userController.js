@@ -3,6 +3,7 @@ const admin=require('../models/admin')
 const bcrypt=require('bcrypt')
 const jwt = require('jsonwebtoken');
 const mailgun = require("mailgun-js");
+const { json } = require('body-parser');
 const DOMAIN = 'sandbox29e352940d3f4436ab3570871da6bd7c.mailgun.org';
 // const DOMAIN = 'mail.newazkitchenbdapi.com'; //!not working
 
@@ -293,10 +294,95 @@ const userList=async(req,res)=>{
     
 }
 
+
+const imageUpload=async(req,res)=>{
+  const userData=await UserRegister.findOne({user_email:req.body.email})
+  const adminData=await admin.findOne({admin_email:req.body.email})
+
+  console.log({userData})
+  // console.log({adminData})
+
+  const {userImage,email}=req.body
+
+  if(userData){
+    console.log('user Info ')
+    await UserRegister.findOneAndUpdate({user_email:email},{userImage:userImage},{new:true},(err,docs)=>{
+        if(!err){
+          res.status(200).json(docs)
+        }else{
+          res.status(400).json('error')
+          
+        }
+    })
+    
+
+    
+  } 
+  if(adminData){
+    console.log('admin info')
+  }
+}
+
+const getProfile=async(req,res)=>{
+  const userData=await UserRegister.findOne({user_email:req.params.email})
+  const adminData=await admin.findOne({admin_email:req.params.email})
+
+// console.log({adminData})
+// if(adminData===null){
+//   console.log('admin access')
+// }else{console.log('admin accessed')}
+
+// if(userData===null){
+//   console.log('user access')
+// }else{console.log('user does accessed')}
+
+// try{
+  
+//   const resData=await UserRegister.findOne({user_email:req.params.email})
+//   res.status(200).json(resData)
+  
+//     // res.status(200).json(resData)
+    
+//  }catch(e){
+//    res.status(400).json('Server issue')
+//   } ;
+
+try{
+
+let resData
+
+if(userData){
+  resData=await UserRegister.findOne({user_email:req.params.email})
+}else if(adminData){
+  resData=await admin.findOne({admin_email:req.params.email})
+}
+res.status(200).json(resData)
+
+ }catch(e){
+  res.status(400).json('Server issue')
+  } ;
+
+
+
+
+
+//  if(adminData){ await admin.findOne({admin_email:req.params.email},(err,docs)=>{
+//   if(!err){
+//   res.status(200).json(docs)
+//   }else{
+//     res.status(400).json(docs)
+//   }
+//     })}
+
+
+}
+
 module.exports={
  createUser,
  signIn,
  userList,
- verifiedUser
+ verifiedUser,
+ imageUpload,
+ getProfile
 
 }

@@ -13,6 +13,11 @@ router
 router
 .route('/alluser')
 .get(userController.userList)
+.patch(userController.imageUpload)
+
+router
+.route('/alluser/:email')
+.get(userController.getProfile)
 
 router
 .route('/activeacc/:signupinfo')
