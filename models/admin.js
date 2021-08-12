@@ -23,9 +23,8 @@ const adminSchema=new Schema({
    type:String,
    required:true
 },
- admin_imageUrl:{
-  type:String,
-
+userImage:{
+  type:String
  },
 
  created_date:{

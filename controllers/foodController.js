@@ -46,6 +46,10 @@ const addFood=async(req , res)=>{
 
 }
 
+
+// const response= await OrderList.find()
+//     .populate('user',"user_name user_email -_id")
+
 const getFoodsList=async(req,res)=>{
  try{
   const response=await FoodDetail.find()

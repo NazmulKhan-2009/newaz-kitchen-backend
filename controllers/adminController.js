@@ -44,7 +44,7 @@ const createAdmin=async(req,res)=>{
  } else{
    const hash_pass=await bcrypt.hash(admin_password,10)
   const adminInfo=new Admin({
-    admin_name,admin_email,admin_mobile,admin_password:hash_pass,admin_imageUrl,created_date
+    admin_name,admin_email,admin_mobile,admin_password:hash_pass,userImage:admin_imageUrl,created_date
   })
  
   const resData=await adminInfo.save()

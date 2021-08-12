@@ -7,7 +7,7 @@ const userRegisterSchema=new Schema({
  user_name:{
   type:String,
   required:true,
-  trim: true,
+  
   unique:true
   
  },
@@ -15,7 +15,7 @@ const userRegisterSchema=new Schema({
  user_email:{
   type:String,
   required:true,
-  trim:true,
+  
   unique:true
  },
 
@@ -52,7 +52,20 @@ order:[
     type:mongoose.Types.ObjectId,
     ref:'OrderCollection'
   }
-]
+],
+favorite:[
+  {
+    type:mongoose.Types.ObjectId,
+    ref:'FoodCollection'
+  }
+],
+event:[
+  {
+    type:mongoose.Types.ObjectId,
+    ref:'event'
+  }
+],
+
 
 
 })

@@ -23,4 +23,12 @@ router
 .route('/activeacc/:signupinfo')
 .get(userController.verifiedUser)
 
+router
+.route('/favfood/:foodId/:email')
+.patch(userController.addFavFood)
+
+router
+.route('/addevent')
+.post(userController.addEvent)
+
 module.exports=router
