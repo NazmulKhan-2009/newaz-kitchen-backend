@@ -14,7 +14,13 @@ const eventSchema=new Schema({
 
  message:String,
 
- status:String
+ status:String,
+
+ created_at:{
+  type:Date,
+  default:Date.now
+  // default:new Date(Date.now()).toLocaleString()
+ },
  
 
 

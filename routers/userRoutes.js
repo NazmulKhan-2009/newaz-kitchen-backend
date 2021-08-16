@@ -31,4 +31,8 @@ router
 .route('/addevent')
 .post(userController.addEvent)
 
+router
+.route('/event/:eventId')
+.patch(userController.cancelEvent)
+
 module.exports=router

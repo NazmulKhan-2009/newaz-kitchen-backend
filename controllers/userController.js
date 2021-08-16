@@ -375,7 +375,7 @@ try{
 let resData
 
 if(userData){
-  resData=await UserRegister.findOne({user_email:req.params.email}).populate('favorite',"imageUrl foodTitle _id").populate('order','orderId order_status  ordered_Data -_id').populate('event' ,'eventType eventTime status phone message -_id')
+  resData=await UserRegister.findOne({user_email:req.params.email}).populate('favorite',"imageUrl foodTitle _id").populate('order','orderId order_status  ordered_Data -_id').populate({path:'event' , options:{ sort: { "created_at": -1 } }})
 }else if(adminData){
   resData=await admin.findOne({admin_email:req.params.email})
 }
@@ -473,6 +473,15 @@ const addEvent=async(req,res)=>{
 
 }
 
+
+
+const cancelEvent=async(req,res)=>{
+    console.log(req.params)
+
+    const response=await Event.findByIdAndUpdate({_id:req.params.eventId},{status:'cancel'},{new:true})
+    console.log(response)
+}
+
 module.exports={
  createUser,
  signIn,
@@ -481,6 +490,7 @@ module.exports={
  imageUpload,
  getProfile,
  addFavFood,
- addEvent
+ addEvent,
+ cancelEvent
 
 }
