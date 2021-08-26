@@ -1,3 +1,4 @@
+require('dotenv').config()
 const UserRegister=require('../models/user')
 const admin=require('../models/admin')
 const Event=require('../models/events')
@@ -9,6 +10,7 @@ const DOMAIN = 'sandbox29e352940d3f4436ab3570871da6bd7c.mailgun.org';
 // const DOMAIN = 'mail.newazkitchenbdapi.com'; //!not working
 // const OrderList=require("../models/orders")
 const FoodDetail=require("../models/foods");
+const { findOneAndUpdate } = require('../models/user');
 
 // const createUser = async(req,res)=>{
   
@@ -152,8 +154,8 @@ const createUser = async(req,res)=>{
  
   //!------------>
 // const mg = mailgun({apiKey: '946ff4b1dc204b52b7e7e5b7f664d8ac-1f1bd6a9-df73d674', domain: DOMAIN});
-// // const token=jwt.sign({userName:userData.user_name,userEmail:userData.user_email},'mynameiskhan',{expiresIn:'60m'})
-// const token=jwt.sign(userData,'mynameiskhan',{expiresIn:'60m'})
+// // const token=jwt.sign({userName:userData.user_name,userEmail:userData.user_email},process.env.JWT_REF,{expiresIn:'60m'})
+// const token=jwt.sign(userData,process.env.JWT_REF,{expiresIn:'60m'})
 
 // const data = {
 // 	from: 'noreply@hello.com',
@@ -182,7 +184,7 @@ const createUser = async(req,res)=>{
 const verifiedUser=async(req,res)=>{
     // console.log(req.params.signupinfo)
     // res.status(200).json({user_info:req.params.signupinfo})
-    const verifiedData=jwt.verify(req.params.signupinfo, 'mynameiskhan')
+    const verifiedData=jwt.verify(req.params.signupinfo, process.env.JWT_REF)
     console.log(verifiedData)
     // res.status(200).json(verifiedData)
    await UserRegister.create(verifiedData)
@@ -225,7 +227,7 @@ const signIn=async(req,res)=>{
       const token=await jwt.sign({
         // data:{user_name:fetchUserName.user_name,user_id:fetchUserName._id}
         user_name:fetchUserName.user_name,user_id:fetchUserName._id
-      }, 'mynameiskhan', { expiresIn: '1h' });
+      }, process.env.JWT_REF , { expiresIn: '1h' });
 
       console.log(token)
 
@@ -249,7 +251,7 @@ const signIn=async(req,res)=>{
       
       if(matchPassword){
 
-        const token=await jwt.sign({admin_name:fetchAdminName.admin_name,admin_id:fetchAdminName._id},'mynameiskhan',{expiresIn:'1h'})
+        const token=await jwt.sign({admin_name:fetchAdminName.admin_name,admin_id:fetchAdminName._id},process.env.JWT_REF,{expiresIn:'1h'})
         console.log(token)
 
           res.status(200).json({
@@ -479,7 +481,22 @@ const cancelEvent=async(req,res)=>{
     console.log(req.params)
 
     const response=await Event.findByIdAndUpdate({_id:req.params.eventId},{status:'cancel'},{new:true})
+    res.status(200).json(response)
     console.log(response)
+}
+
+
+
+//! RESET PASSWORD
+
+const resetPassword=async(req,res)=>{
+  const user_email=req.body.user_email
+  const hash_pass=await bcrypt.hash(req.body.user_password, 10)
+  
+  const response=await UserRegister.findOneAndUpdate({user_email},{user_password:hash_pass})
+  console.log(response)
+
+// console.log(user_email,hash_pass)
 }
 
 module.exports={
@@ -491,6 +508,7 @@ module.exports={
  getProfile,
  addFavFood,
  addEvent,
- cancelEvent
+ cancelEvent,
+ resetPassword
 
 }

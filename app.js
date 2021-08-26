@@ -170,7 +170,7 @@ app.use(('/api/admin'), adminRoutes)
 
 
   app.get('/',(req,res)=>{
-    res.send("Welcome to Newaz Kitchen API")
+    res.send("Welcome to Newaz Kitchen API-2021")
    })
 
 

@@ -35,4 +35,8 @@ router
 .route('/event/:eventId')
 .patch(userController.cancelEvent)
 
+router
+.route('/resetpassword')
+.patch(userController.resetPassword)
+
 module.exports=router
