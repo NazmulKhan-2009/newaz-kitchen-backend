@@ -155,7 +155,7 @@ const createUser = async(req,res)=>{
   //!------------>
 // const mg = mailgun({apiKey: '946ff4b1dc204b52b7e7e5b7f664d8ac-1f1bd6a9-df73d674', domain: DOMAIN});
 // // const token=jwt.sign({userName:userData.user_name,userEmail:userData.user_email},process.env.JWT_REF,{expiresIn:'60m'})
-// const token=jwt.sign(userData,process.env.JWT_REF,{expiresIn:'60m'})
+// const token=jwt.sign(userData,'${process.env.JWT_REF}',{expiresIn:'60m'})
 
 // const data = {
 // 	from: 'noreply@hello.com',
@@ -227,7 +227,7 @@ const signIn=async(req,res)=>{
       const token=await jwt.sign({
         // data:{user_name:fetchUserName.user_name,user_id:fetchUserName._id}
         user_name:fetchUserName.user_name,user_id:fetchUserName._id
-      }, process.env.JWT_REF , { expiresIn: '1h' });
+      }, process.env.JWT_REF, { expiresIn: '1h' });
 
       console.log(token)
 
