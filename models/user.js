@@ -65,9 +65,6 @@ event:[
     ref:'event'
   }
 ],
-
-
-
 })
 
 const userRegisterData=model('user', userRegisterSchema)

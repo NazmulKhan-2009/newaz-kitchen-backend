@@ -12,6 +12,10 @@ router
  .route('/orderhistory/:email') 
  .get(loginAuth,orderControllers.orderHistory)
  
+ 
+router
+ .route('/orderhistoryall')
+ .get(orderControllers.orderHistoryAll)
 
 router
 .route('/:orderId')

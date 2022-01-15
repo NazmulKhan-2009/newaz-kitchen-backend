@@ -1,15 +1,12 @@
 const FoodDetail=require("../models/foods");
 
-
-
 //ADD FOOD
 
 const addFood=async(req , res)=>{
+  // console.log(req.body)
  try{
-
      const time =new Date().toLocaleTimeString()
-     const date=new Date().toDateString() 
-         
+     const date=new Date().toDateString()        
      const foodData={
      foodTitle:req.body.foodTitle,
      foodType:req.body.foodType,
@@ -18,9 +15,7 @@ const addFood=async(req , res)=>{
      imageUrl:req.body.imageUrl,
      Local_Date:date,
      Local_Time:time,
-     
-     
-   }
+  }
 
      const foodDetailRes=await FoodDetail.create(foodData)
      //!console.log(foodDetailRes)
@@ -32,23 +27,7 @@ const addFood=async(req , res)=>{
  }catch(e){
      res.status(400).send(e)
    } ;
-
-//  .then((response)=>
-//     {
-//       res.status(201).json({
-//         status: 'success',
-//         data: {
-//         response
-//         },
-//       });
-//     } 
-//     )
-
 }
-
-
-// const response= await OrderList.find()
-//     .populate('user',"user_name user_email -_id")
 
 const getFoodsList=async(req,res)=>{
  try{
@@ -72,25 +51,6 @@ const deleteFood=async(req,res)=>{
   }
 }
 
-//Update/patch Food
-
-// router.patch('/students/:id' , async(req , res)=>{
-//   const _id=req.params.id
-//  try{
-//   const studentInfo= await Student.findByIdAndUpdate(_id, req.body,{new:true})
-
-//   // find without id the the bellow method used
-//   // const studentInfo= await Student.findOneAndUpdate(email/, req.body,{new:true})
-
-//   res.status(200).send(studentInfo)
-//   }catch(e){
-//     res.status(400).send(e)
-//    } ;
-
-// })
-
-
-
 const partialUpdate=async(req,res)=>{
 const _id=req.params.id
 const updateData=req.body
@@ -111,17 +71,13 @@ try {
 
 //SEARCH FOOD
 const searchFood=async(req,res)=>{
-  const _id=req.params.id
-  
-  
-  console.log(_id)
-  
+  const _id=req.params.id 
+  console.log(_id) 
   try {
     const foodInfo=await FoodDetail.find({_id:_id})
     if(foodInfo!==null){
       res.status(200).send({data:foodInfo})
-    }
-  
+    } 
   } catch (error) {
     res.status(400).send(error)
   }
@@ -140,17 +96,11 @@ const searchFood=async(req,res)=>{
     res.status(200).json({data})
   }
 
-
-
   const review=async(req,res)=>{
     try{
         console.log(req.body)
-        // const existData=await FoodDetail.findOne({reviews.email:req.body.rating_email})
-        // const _id=req.body.foodId
         const existData=await FoodDetail.findById({_id:req.body.foodId})
         console.log(existData.reviews)
-
-        // const emailExist=existData.reviews.some(rev=>rev.email===req.body.rating_email )
         const infoExist=existData.reviews.some(rev=>rev.email===req.body.rating_email &&
           rev.rate>0
           )
@@ -159,29 +109,27 @@ const searchFood=async(req,res)=>{
         console.log(bool)
         console.log(infoExist)
 
-        // const 
+       if(!infoExist){
+        const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
+          $push:{
+            reviews:{
+            rate:req.body.rating || 0,
+            comment:req.body.comment,
+            email:req.body.rating_email,
+            date:`${new Date().toDateString()} at ${new Date().toLocaleTimeString()}`}
+      }
+    })
 
-if(!infoExist){
-  const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
-    $push:{
-       reviews:{
-         rate:req.body.rating || 0,
-         comment:req.body.comment,
-         email:req.body.rating_email,
-         date:`${new Date().toDateString()} at ${new Date().toLocaleTimeString()}`}
-    }
-  })
-
-  if(resData!==null){
+    if(resData!==null){
     const resSendData=await FoodDetail.findById({_id:req.body.foodId})
     console.log(resSendData.reviews.length)
     res.status(200).send({data:resSendData})
-  }
+    }
 
-}else{
-  const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
-    $push:{
-       reviews:{
+    }else{
+      const resData=await FoodDetail.updateOne({_id:req.body.foodId},{
+        $push:{
+          reviews:{
          rate:0,
          comment:req.body.comment,
          email:req.body.rating_email,

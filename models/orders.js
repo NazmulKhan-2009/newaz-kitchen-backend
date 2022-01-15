@@ -11,6 +11,10 @@ const OrderSchema=new mongoose.Schema({
   type:String,
   required:true
  },
+ paymentCondition:{
+  type:String,
+  required:true
+ },
  payment_by:{
   
  },
@@ -34,7 +38,7 @@ const OrderSchema=new mongoose.Schema({
  user:{
   type:mongoose.Types.ObjectId,
   ref:"user"
- }
+ },
  
  
 })
