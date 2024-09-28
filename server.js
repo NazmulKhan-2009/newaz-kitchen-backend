@@ -30,7 +30,7 @@ const mongoose = require('mongoose');
 
 //const DB=`mongodb://localhost:27017/newazkitchenadmin`
 
-const DB=`mongodb+srv://nkadmin:nazifa--09@cluster0.qnbwm.mongodb.net/newazkitchen?retryWrites=true&w=majority`
+const DB=`mongodb+srv://nkadmin:na--fa--09@cluster0.qnbwm.mongodb.net/newazkitchen?retryWrites=true&w=majority`
 
 //Creating Database
 mongoose.connect(DB,{
